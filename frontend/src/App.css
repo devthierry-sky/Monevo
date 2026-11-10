@@ -51,6 +51,55 @@
 .card-expense p {
   color: #f85149;
 }
+.transaction-section {
+  margin-top: 30px;
+}
+.transaction-section h2 {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  justify-self: center;
+}
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.transaction-item {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 16px;
+}
+.transaction-item h3 {
+  color: #fff;
+  margin-bottom: 8px;
+}
+.transaction-item p {
+  color: #8B949E;
+  margin: 4px 0;
+}
+.transaction-item .transaction-type-income {
+  color: #3FB950;
+}
+
+.transaction-item .transaction-type-expense {
+  color: #F85149;
+}
+
+.transaction-item .transaction-type-investment {
+  color: #1F6FEB;
+}
+.transaction-item .transaction-value-income {
+  color: #3FB950;
+}
+
+.transaction-item .transaction-value-expense {
+  color: #F85149;
+}
+
+.transaction-item .transaction-value-investment {
+  color: #1F6FEB;
+}
 @media (max-width: 600px) {
   .container {
     padding: 20px;

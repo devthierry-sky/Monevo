@@ -1,32 +1,11 @@
 import './App.css'
 import StatCard from './components/StatCard'
 
-const stats = [
-  {
-    id: "balance",
-    title: "Saldo total",
-    value: "R$ 0,00",
-    type: "balance"
-  },
-  {
-    id: "income",
-    title: "Receitas",
-    value: "R$ 0,00",
-    type: "income"
-  },
-  {
-    id: "expense",
-    title: "Despesas",
-    value: "R$ 0,00",
-    type: "expense"
-  },
-  {
-  id: "invest",
-  title: "Investimentos",
-  value: "R$ 0,00",
-  type: "invest"
-  }
-]
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL"
+})
+
 const transactions = [
   {
     id: "1",
@@ -51,11 +30,23 @@ const transactions = [
     description: "Internet",
     amount: 100,
     type: "expense"
+  },
+  {
+    id: "5",
+    description: "Tesouro Direto",
+    amount: 500,
+    type: "investment"
   }
 ]
 
 const incomes = transactions.filter ((transaction) => {
   return transaction.type === "income"
+})
+const expenses = transactions.filter ((transaction) => {
+  return transaction.type === "expense"
+})
+const investments = transactions.filter ((transaction) => {
+  return transaction.type === "investment"
 })
 
 const totalIncome = incomes.reduce((total, transaction) => {
@@ -64,6 +55,39 @@ const totalIncome = incomes.reduce((total, transaction) => {
 const totalExpense = expenses.reduce((total, transaction) => {
   return total + transaction.amount
 }, 0)
+const totalInvestment = investments.reduce((total, transaction) => {
+  return total + transaction.amount
+}, 0)
+
+const balance = totalIncome - totalExpense
+
+
+const stats = [
+  {
+    id: "balance",
+    title: "Saldo total",
+    value: currencyFormatter.format(balance),
+    type: "balance"
+  },
+  {
+    id: "income",
+    title: "Receitas",
+    value: currencyFormatter.format(totalIncome),
+    type: "income"
+  },
+  {
+    id: "expense",
+    title: "Despesas",
+    value: currencyFormatter.format(totalExpense),
+    type: "expense"
+  },
+  {
+    id: "investment",
+    title: "Investimentos",
+    value: currencyFormatter.format(totalInvestment),
+    type: "investment"
+  }
+]
 
 function App() {
 
@@ -84,6 +108,28 @@ function App() {
               type={stat.type}
             />
           ))}
+        </section>
+        <section className="transaction-section">
+          <h2>Movimentações recentes</h2>
+
+          <div className="transaction-list">
+            {transactions.map((transaction) => (
+              <div className="transaction-item" key= {transaction.id}>
+                <h3>{transaction.description}</h3>
+                <p className={`transaction-type-${transaction.type}`}>{transaction.type}</p>
+                <p className={`transaction-value-${transaction.type}`}>
+                  {
+                    transaction.type === "income" 
+                      ? "+"
+                      : transaction.type === "expense"
+                        ? "-"
+                        : ""
+                  }
+                  {currencyFormatter.format(transaction.amount)}
+                </p>
+              </div>
+            ))}
+          </div>
         </section>
         </main>
       </div>
