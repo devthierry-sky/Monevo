@@ -12,31 +12,36 @@ const transactions = [
     id: "1",
     description: "Salário",
     amount: 3000,
-    type: "income"
+    type: "income",
+    date: "2026-11-05"
   },
   {
     id: "2",
     description: "Freelance",
     amount: 500,
-    type: "income"
+    type: "income",
+    date: "2027-03-10"
   },
   {
     id: "3",
     description: "Aluguel",
     amount: 1200,
-    type: "expense"
+    type: "expense",
+    date: "2026-11-10"
   },
   {
     id: "4",
     description: "Internet",
     amount: 100,
-    type: "expense"
+    type: "expense",
+    date: "2027-03-12"
   },
   {
     id: "5",
     description: "Tesouro Direto",
     amount: 500,
-    type: "investment"
+    type: "investment",
+    date: "2026-11-20"
   }
 ]
 
@@ -63,46 +68,75 @@ const totalInvestment = investments.reduce((total, transaction) => {
 const balance = totalIncome - totalExpense
 
 const limiteMensal = 2000
-const percentualOrcamento = (totalExpense / limiteMensal) * 100
-const orcamentoExcedido = totalExpense > limiteMensal
-
-const statusOrcamento = percentualOrcamento >= 100
-  ? "danger"
-  : percentualOrcamento >= 80
-    ? "warning"
-    : "normal"
-
-const stats = [
-  {
-    id: "balance",
-    title: "Saldo total",
-    value: currencyFormatter.format(balance),
-    type: "balance"
-  },
-  {
-    id: "income",
-    title: "Receitas",
-    value: currencyFormatter.format(totalIncome),
-    type: "income"
-  },
-  {
-    id: "expense",
-    title: "Despesas",
-    value: currencyFormatter.format(totalExpense),
-    type: "expense"
-  },
-  {
-    id: "investment",
-    title: "Investimentos",
-    value: currencyFormatter.format(totalInvestment),
-    type: "investment"
-  }
-]
 
 function App() {
 
   const [mesSelecionado, setMesSelecionado] = useState('2026-11')
   const [seletorAberto, setSeletorAberto] = useState(false)
+  const [anoVisivel, setAnoVisivel] = useState(
+    Number(mesSelecionado.split ("-")[0])
+  )
+  const transactionsOfMonth = transactions.filter((transaction) => {
+    return transaction.date.startsWith(mesSelecionado)
+  })
+
+  const monthlyIncomes = transactionsOfMonth.filter((transaction) => {
+  return transaction.type === "income"
+  })
+  const monthlyExpenses = transactionsOfMonth.filter((transaction) => {
+  return transaction.type === "expense"
+  })
+  const monthlyInvestments = transactionsOfMonth.filter((transaction) => {
+  return transaction.type === "investment"
+  })
+
+  const monthlyTotalIncome = monthlyIncomes.reduce((total, transaction) => {
+  return total + transaction.amount
+  }, 0)
+  const monthlyTotalExpense = monthlyExpenses.reduce((total, transaction) => {
+    return total + transaction.amount
+  }, 0)
+  const monthlyTotalInvestment = monthlyInvestments.reduce((total, transaction) => {
+    return total + transaction.amount
+  }, 0)
+
+  const stats = [
+    {
+      id: "balance",
+      title: "Saldo total",
+      value: currencyFormatter.format(balance),
+      type: "balance"
+    },
+    {
+      id: "income",
+      title: "Receitas",
+      value: currencyFormatter.format(monthlyTotalIncome),
+      type: "income"
+    },
+    {
+      id: "expense",
+      title: "Despesas",
+      value: currencyFormatter.format(monthlyTotalExpense),
+      type: "expense"
+    },
+    {
+      id: "investment",
+      title: "Investimentos",
+      value: currencyFormatter.format(monthlyTotalInvestment),
+      type: "investment"
+    }
+  ]
+
+  const percentualOrcamento = (monthlyTotalExpense / limiteMensal) * 100
+
+  const orcamentoExcedido = monthlyTotalExpense > limiteMensal
+
+  const statusOrcamento = percentualOrcamento >= 100
+    ? "danger"
+    : percentualOrcamento >= 80
+      ? "warning"
+      : "normal"
+
   const meses = [
     "Janeiro", "Fevereiro", "Março",
     "Abril", "Maio", "Junho",
@@ -167,24 +201,45 @@ function App() {
           <div className="month-selector" ref={seletorRef}>
             <button
               className="month-selector-button"
-              onClick={() => setSeletorAberto(!seletorAberto)}
-            >
+              onClick={() => {
+                if (!seletorAberto) {
+                  setAnoVisivel(Number(mesSelecionado.split("-")[0]))
+                }
+
+                setSeletorAberto(!seletorAberto)
+              }}
+              >
               <span>{meses[Number(mesSelecionado.split("-")[1]) - 1]} de {mesSelecionado.split("-")[0]}</span>
               <span className="month-chevron"></span>
             </button>
 
             {seletorAberto && (
               <div className="month-dropdown">
-                <h3>Selecione um mês</h3>
+                <div className="month-dropdown-header">
+                  <button
+                    onClick={() => setAnoVisivel(anoVisivel - 1)}
+                  >
+                    ‹
+                  </button>
+
+                  <h3 key={anoVisivel} className="year-animation">{anoVisivel}</h3>
+
+                  <button
+                    onClick={() => setAnoVisivel(anoVisivel + 1)}
+                  >
+                    ›
+                  </button>
+                </div>
                 <div className="months-grid">
                   {meses.map((mes, index) => (
                     <button key={mes} className= {
-                      Number(mesSelecionado.split("-")[1]) === index + 1
+                      Number(mesSelecionado.split("-")[1]) === index + 1 &&
+                      Number(mesSelecionado.split("-")[0]) === anoVisivel
                         ? "selected"
                         : ""
                       }
                       onClick={() => {
-                        const ano = mesSelecionado.split("-")[0]
+                        const ano = anoVisivel
                         const numerosMes = String(index + 1).padStart(2, "0")
 
                         setMesSelecionado(`${ano}-${numerosMes}`)
@@ -213,18 +268,18 @@ function App() {
 
           <div className="section-header">
             <h2>Orçamento mensal</h2>
-            <span>{percentualOrcamento.toFixed(1)}% utilizado</span>
+            <span>{Math.round(percentualOrcamento)}% utilizado</span>
           </div>
           <div className="budget-card">
 
             <div className="budget-info">
               <div>
                 <p>Gastos do mês</p>
-                <h3>R$ 1.300,00</h3>
+                <h3>{currencyFormatter.format(monthlyTotalExpense)}</h3>
               </div>
               <div>
                 <p>Limite mensal</p>
-                <h3>R$ 2.000,00</h3>
+                <h3>{currencyFormatter.format(limiteMensal)}</h3>
               </div>
             </div>
 
@@ -236,8 +291,8 @@ function App() {
             </div>
            <p className={`budget-remaining ${statusOrcamento}`}>
               {orcamentoExcedido
-                ? `${currencyFormatter.format(totalExpense - limiteMensal)} acima do limite mensal`
-                : `${currencyFormatter.format(limiteMensal - totalExpense)} disponíveis`}
+                ? `${currencyFormatter.format(monthlyTotalExpense - limiteMensal)} acima do limite mensal`
+                : `${currencyFormatter.format(limiteMensal - monthlyTotalExpense)} disponíveis`}
            </p>
           </div>
         </section>
