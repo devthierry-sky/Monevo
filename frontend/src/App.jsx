@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import StatCard from './components/StatCard'
 
@@ -101,6 +101,7 @@ const stats = [
 
 function App() {
 
+  const [mesSelecionado, setMesSelecionado] = useState('2026-11')
   const [seletorAberto, setSeletorAberto] = useState(false)
   const meses = [
     "Janeiro", "Fevereiro", "Março",
@@ -108,6 +109,26 @@ function App() {
     "Julho", "Agosto", "Setembro",
     "Outubro", "Novembro", "Dezembro"
   ]
+  const seletorRef = useRef(null)
+  
+  useEffect(() => {
+    if (!seletorAberto) return
+
+    function handleClickOutside(event) {
+      if (
+        seletorRef.current &&
+        !seletorRef.current.contains(event.target)
+      ) {
+        setSeletorAberto(false)
+      }
+    }
+
+   document.addEventListener("mousedown", handleClickOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [seletorAberto])
 
   return (
     <div className="app-layout">
@@ -143,18 +164,37 @@ function App() {
             <h2>Visão geral</h2>
             <p>Acompanhe suas finanças por período</p>
           </div>
-          <div className="month-selector">
+          <div className="month-selector" ref={seletorRef}>
             <button
               className="month-selector-button"
               onClick={() => setSeletorAberto(!seletorAberto)}
             >
               <span>{meses[Number(mesSelecionado.split("-")[1]) - 1]} de {mesSelecionado.split("-")[0]}</span>
-              <span>⌄</span>
+              <span className="month-chevron"></span>
             </button>
 
             {seletorAberto && (
               <div className="month-dropdown">
                 <h3>Selecione um mês</h3>
+                <div className="months-grid">
+                  {meses.map((mes, index) => (
+                    <button key={mes} className= {
+                      Number(mesSelecionado.split("-")[1]) === index + 1
+                        ? "selected"
+                        : ""
+                      }
+                      onClick={() => {
+                        const ano = mesSelecionado.split("-")[0]
+                        const numerosMes = String(index + 1).padStart(2, "0")
+
+                        setMesSelecionado(`${ano}-${numerosMes}`)
+                        setSeletorAberto(false)
+                      }}
+                    >
+                      {mes.substring(0, 3)}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
