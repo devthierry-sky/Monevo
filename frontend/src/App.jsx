@@ -45,6 +45,37 @@ const transactions = [
   }
 ]
 
+const recurringBills = [
+  {
+    id: "1",
+    description: "Aluguel",
+    amount:"1200",
+    dueDate: "2026-11-10",
+    status: "paid"
+  },
+  {
+    id: "2",
+    description: "Internet",
+    amount: "100",
+    dueDate: "2026-11-20",
+    status: "pending"
+  },
+  {
+   id: "3",
+   description: "Netflix",
+   amount: 39.90,
+   dueDate: "2026-11-25",
+   status: "pending"
+  },
+  {
+    id: "4",
+    description: "Energia elétrica",
+    amount: 180,
+    dueDate: "2026-11-28",
+    status: "pending"
+  }
+  ]
+
 const incomes = transactions.filter ((transaction) => {
   return transaction.type === "income"
 })
