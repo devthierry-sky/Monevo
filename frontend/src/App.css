@@ -413,6 +413,67 @@
 .year-animation {
   animation: yearChange 0.25s ease;
 }
+.recurring-bills {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 24px;
+}
+.recurring-bills h2 {
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+.bills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.bills-list > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+}
+.bills-list p {
+  color: #E6EDF3;
+  margin: 0;
+}
+.bills-list p:last-child {
+  font-weight: 600;
+}
+.bill-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.bill-details span {
+  color: #8b949E;
+  font-size: 12px;
+}
+.bill-status {
+  width: fit-content;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.bill-status.paid {
+  color: #3FB950;
+  background: rgba(63, 185, 80, 0.12);
+}
+.bill-status.pending {
+  color: #D29922;
+  background: rgba(210, 153, 34, 0.12);
+}
+.bill-status.overdue {
+  color: #F85149;
+  background: rgba(248, 81, 73, 0.12);
+}
 @keyframes yearChange {
   from {
     opacity: 0;

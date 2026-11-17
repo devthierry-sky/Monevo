@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import StatCard from './components/StatCard'
+import RecurringBills from './components/RecurringBills'
 
 const currencyFormatter = new Intl.NumberFormat("pt-BR", {
   style: "currency",
@@ -49,14 +50,14 @@ const recurringBills = [
   {
     id: "1",
     description: "Aluguel",
-    amount:"1200",
+    amount: 1200,
     dueDate: "2026-11-10",
     status: "paid"
   },
   {
     id: "2",
     description: "Internet",
-    amount: "100",
+    amount: 100,
     dueDate: "2026-11-20",
     status: "pending"
   },
@@ -109,6 +110,10 @@ function App() {
   )
   const transactionsOfMonth = transactions.filter((transaction) => {
     return transaction.date.startsWith(mesSelecionado)
+  })
+
+  const recurringBillsOfMonth = recurringBills.filter((bill) => {
+  return bill.dueDate.startsWith(mesSelecionado)
   })
 
   const monthlyIncomes = transactionsOfMonth.filter((transaction) => {
@@ -327,6 +332,10 @@ function App() {
            </p>
           </div>
         </section>
+        <RecurringBills
+          bills={recurringBillsOfMonth}
+          currencyFormatter={currencyFormatter}
+        />
       </main>
     </div>
   )
