@@ -1,4 +1,4 @@
-# Monevo
+<h1 align="center">Monevo</h1>
 
 <p align="center">
   Your Money. Your Control.
