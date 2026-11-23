@@ -136,6 +136,18 @@ function App() {
     return total + transaction.amount
   }, 0)
 
+  const hoje = new Date()
+  hoje.setHours(0,0,0,0)
+  
+  const dataLimite = new Date(hoje)
+  dataLimite.setDate(hoje.getDate() + 15)
+
+  const upcomingBills = recurringBills.filter((bill) => {
+    const vencimento = new Date (`${bill.dueDate}T00:00:00`)
+
+    return vencimento >= hoje && vencimento <= dataLimite && bill.status !== "paid"
+  })
+
   const stats = [
     {
       id: "balance",
@@ -333,7 +345,7 @@ function App() {
           </div>
         </section>
         <RecurringBills
-          bills={recurringBillsOfMonth}
+          bills={upcomingBills}
           currencyFormatter={currencyFormatter}
         />
       </main>

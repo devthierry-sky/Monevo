@@ -3,7 +3,7 @@ function RecurringBills ({bills, currencyFormatter}) {
     hoje.setHours(0, 0, 0, 0)
     return (
         <section className="recurring-bills">
-            <h2>Contas recorrentes</h2>
+            <h2>Contas recorrentes ({bills.length})</h2>
 
             <div className="bills-list">
                 {bills.map((bill) => {
